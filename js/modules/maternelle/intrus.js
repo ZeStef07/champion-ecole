@@ -26,8 +26,8 @@ export function initIntrusExercise(container) {
 
   if (shapeMode) {
     // Intrus basé sur la forme
-    const baseShape = shapes[0] === 'cercle' ? 'circle' : 'square';
-    const intruderShape = (shapes[1] || shapes[0]) === 'cercle' ? 'circle' : 'square';
+    const baseShape = shapes[0] === 'rond' ? 'circle' : 'square';
+    const intruderShape = (shapes[1] || shapes[0]) === 'rond' ? 'circle' : 'square';
     const baseShapeLabel = shapes[0];
     const intruderShapeLabel = shapes[1] || shapes[0];
 

@@ -1,4 +1,4 @@
-import { initOrthographe } from './modules/orthographe.js';
+import { initFrancais } from './modules/francais.js';
 import { initMaths } from './modules/maths.js';
 import { initAnglais } from './modules/anglais.js';
 import { initMaternelle } from './modules/maternelle.js';
@@ -20,8 +20,9 @@ document.addEventListener('DOMContentLoaded', () => {
         targetSection.classList.add('active');
       }
 
-      if (tabName === 'orthographe') {
-        initOrthographe();
+      if (tabName === 'francais') {
+        const activeSubFrancais = document.querySelector('#tab-francais .sub-tab-btn.active');
+        initFrancais(activeSubFrancais ? activeSubFrancais.dataset.sub : 'orthographe');
       } else if (tabName === 'maths') {
         const activeSubMath = document.querySelector('#tab-maths .sub-tab-btn.active');
         initMaths(activeSubMath ? activeSubMath.dataset.sub : 'operations');
@@ -31,6 +32,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const activeSubMat = document.querySelector('#tab-maternelle .sub-tab-btn.active');
         initMaternelle(activeSubMat ? activeSubMat.dataset.sub : 'paniers');
       }
+    });
+  });
+
+  const francaisSubButtons = document.querySelectorAll('#tab-francais .sub-tab-btn');
+  francaisSubButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      francaisSubButtons.forEach(btn => btn.classList.remove('active'));
+      button.classList.add('active');
+      initFrancais(button.dataset.sub);
     });
   });
 
@@ -52,5 +62,5 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  initOrthographe();
+  initFrancais();
 });

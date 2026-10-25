@@ -12,7 +12,7 @@
   <header class="app-header">
     <h1>🎈 Champion École 🌟</h1>
     <nav class="main-nav">
-      <button class="tab-btn active" data-tab="orthographe">📝 Orthographe</button>
+      <button class="tab-btn active" data-tab="francais">📝 Français</button>
       <button class="tab-btn" data-tab="maths">🔢 Mathématiques</button>
       <button class="tab-btn" data-tab="anglais">🇬🇧 Anglais</button>
       <button class="tab-btn" data-tab="maternelle">🎨 Maternelle</button>
@@ -21,13 +21,17 @@
 
   <main class="app-content">
 
-    <!-- Onglet Orthographe -->
-    <section id="tab-orthographe" class="tab-content active">
-      <div id="orthographe-container" class="exercises-container"></div>
+    <!-- Onglet Français -->
+    <section id="tab-francais" class="tab-content active">
+      <div class="sub-tabs">
+        <button class="sub-tab-btn active" data-sub="orthographe">Orthographe</button>
+        <button class="sub-tab-btn" data-sub="conjugaison">Conjugaison</button>
+      </div>
+      <div id="francais-container" class="exercises-container"></div>
       <div class="validation-bar">
-        <button id="btn-validate-orthographe" class="btn-primary">Vérifier ✨</button>
-        <button id="btn-restart-orthographe" class="btn-secondary">Recommencer 🔄</button>
-        <span id="orthographe-score" class="score-display"></span>
+        <button id="btn-validate-francais" class="btn-primary">Vérifier ✨</button>
+        <button id="btn-restart-francais" class="btn-secondary">Recommencer 🔄</button>
+        <span id="francais-score" class="score-display"></span>
       </div>
     </section>
 

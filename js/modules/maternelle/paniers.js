@@ -34,7 +34,7 @@ export function initPaniersExercise(container) {
       id: i + 1,
       color: assignedCol.name,
       code: assignedCol.code,
-      shape: shape === 'cercle' ? 'circle' : 'square'
+      shape: shape === 'rond' ? 'circle' : 'square'
     });
   }
 

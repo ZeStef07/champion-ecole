@@ -10,14 +10,24 @@ export function generateFractionCard(card) {
     card.dataset.num = num;
     card.dataset.den = den;
 
+    // Affichage visuel des parts coloriées (grille) sans afficher le résultat chiffré
+    let cellsHtml = '';
+    for (let i = 0; i < den; i++) {
+      const isFilled = i < num;
+      const bg = isFilled ? '#3b82f6' : '#ffffff';
+      cellsHtml += `<div style="width: 28px; height: 28px; border: 2px solid #1e293b; background: ${bg}; border-radius: 4px;"></div>`;
+    }
+
     card.innerHTML = `
       <div class="fraction-question-box math-operation-box">
-        <span class="card-title">Écris la fraction correspondant aux parts :</span>
-        <div class="numeration-display">${num} / ${den}</div>
-        <div class="input-wrapper">
-          <input type="text" class="num-input" style="width: 40px; text-align: center;" autocomplete="off">
-          <span>/</span>
-          <input type="text" class="den-input" style="width: 40px; text-align: center;" autocomplete="off">
+        <span class="card-title">Écris la fraction correspondant aux parts colorées :</span>
+        <div style="display: flex; justify-content: center; gap: 4px; margin: 12px 0;">
+          ${cellsHtml}
+        </div>
+        <div class="fraction-vertical-input">
+          <input type="text" class="num-input" autocomplete="off" placeholder="num">
+          <div class="fraction-line"></div>
+          <input type="text" class="den-input" autocomplete="off" placeholder="dén">
         </div>
         <span class="feedback-icon feedback-spacing"></span>
       </div>
@@ -34,7 +44,12 @@ export function generateFractionCard(card) {
 
     card.innerHTML = `
       <div class="fraction-question-box math-operation-box">
-        <span class="card-title">Colorie ${num} part(s) sur ${den} :</span>
+        <span class="card-title">Colorie les parts indiquées :</span>
+        <div class="fraction-display-vertical" style="margin: 10px 0;">
+          <span class="num-text">${num}</span>
+          <div class="fraction-line"></div>
+          <span class="den-text">${den}</span>
+        </div>
         <div style="display: flex; justify-content: center; gap: 5px; margin: 10px 0;">
           ${cellsHtml}
         </div>

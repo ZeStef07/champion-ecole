@@ -9,6 +9,8 @@ export function initOuestExercise(container) {
   const targetColor = colors[getRandomInt(0, colors.length - 1)];
   const targetShape = shapes[getRandomInt(0, shapes.length - 1)];
 
+  let colorNameDisplay = targetColor.name.toLowerCase();
+
   container.innerHTML = `
     <div class="maternelle-wrapper">
       <p class="maternelle-instruction">Écoute la consigne et clique sur le bon objet ! 👂</p>
@@ -19,7 +21,7 @@ export function initOuestExercise(container) {
     </div>
   `;
 
-  const phrase = `Clique sur le ${targetShape} ${targetColor.name.toLowerCase()}`;
+  const phrase = `Clique sur le ${targetShape} ${colorNameDisplay}`;
 
   const speakInstruction = () => {
     if ('speechSynthesis' in window) {
@@ -27,12 +29,33 @@ export function initOuestExercise(container) {
       const utterance = new SpeechSynthesisUtterance(phrase);
       utterance.lang = 'fr-FR';
       utterance.rate = 0.85;
+
+      // Correction pour iOS / Safari / Chrome iOS : garder une référence globale pour éviter le garbage collection
+      window._currentUtterance = utterance;
+
+      // Sur iOS, parfois la voix française met un instant à charger ou nécessite un appel explicite
+      const voices = window.speechSynthesis.getVoices();
+      if (voices.length > 0) {
+        const frVoice = voices.find(v => v.lang.startsWith('fr'));
+        if (frVoice) utterance.voice = frVoice;
+      }
+
       window.speechSynthesis.speak(utterance);
     }
   };
 
-  setTimeout(speakInstruction, 200);
-  container.querySelector('#btn-play-audio').onclick = speakInstruction;
+  // Sur iOS (iPhone/iPad), les navigateurs bloquent la lecture audio automatique sans interaction utilisateur préalable.
+  // Un léger délai permet de tenter la lecture, mais le bouton "🔊 Écouter la consigne" garantit le déclenchement au clic.
+  setTimeout(speakInstruction, 300);
+  
+  const audioBtn = container.querySelector('#btn-play-audio');
+  audioBtn.onclick = () => {
+    // Déverrouillage explicite pour iOS
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.resume();
+    }
+    speakInstruction();
+  };
 
   const grid = container.querySelector('#ouest-grid');
   const explanationBox = container.querySelector('#ouest-explanation');
@@ -59,7 +82,6 @@ export function initOuestExercise(container) {
     el.className = `grid-shape ${cssShapeClass}`;
 
     if (item.shape === 'triangle') {
-      // Pour le triangle CSS, appliquer la couleur sur borderBottom
       el.style.borderBottom = `85px solid ${item.color.code}`;
     } else {
       el.style.backgroundColor = item.color.code;
@@ -79,7 +101,7 @@ export function initOuestExercise(container) {
 
     if (!selectedOption) {
       explanationBox.style.color = '#eab308';
-      explanationBox.innerHTML = `⚠️ N'oublie pas de cliquer sur une forme !`;
+      explanationBox.innerHTML = '⚠️ N\'oublie pas de cliquer sur une forme !';
       feedback.textContent = '❌';
       return false;
     }
@@ -91,7 +113,7 @@ export function initOuestExercise(container) {
       feedback.textContent = '✅';
     } else {
       explanationBox.style.color = '#dc2626';
-      explanationBox.innerHTML = `❌ Tu as cliqué sur un <strong>${selectedOption.shape} ${selectedOption.color.name.toLowerCase()}</strong>.<br>💡 La consigne était : <em>"${phrase}"</em>.`;
+      explanationBox.innerHTML = `❌ Tu as cliqué sur un <strong>${selectedOption.shape} ${selectedOption.color.name.toLowerCase()}</strong>.<br>💡 La consigne audio était : <em>"${phrase}"</em>.`;
       feedback.textContent = '❌';
     }
 

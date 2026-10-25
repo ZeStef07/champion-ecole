@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Champion École - CE2 & Maternelle</title>
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <header class="app-header">
+    <h1>🎈 Champion École 🌟</h1>
+    <nav class="main-nav">
+      <button class="tab-btn active" data-tab="orthographe">📝 Orthographe</button>
+      <button class="tab-btn" data-tab="maths">🔢 Mathématiques</button>
+      <button class="tab-btn" data-tab="anglais">🇬🇧 Anglais</button>
+      <button class="tab-btn" data-tab="maternelle">🎨 Maternelle</button>
+    </nav>
+  </header>
+
+  <main class="app-content">
+
+    <!-- Onglet Orthographe -->
+    <section id="tab-orthographe" class="tab-content active">
+      <div id="orthographe-container" class="exercises-container"></div>
+      <div class="validation-bar">
+        <button id="btn-validate-orthographe" class="btn-primary">Vérifier ✨</button>
+        <button id="btn-restart-orthographe" class="btn-secondary">Recommencer 🔄</button>
+        <span id="orthographe-score" class="score-display"></span>
+      </div>
+    </section>
+
+    <!-- Onglet Mathématiques -->
+    <section id="tab-maths" class="tab-content">
+      <div class="sub-tabs">
+        <button class="sub-tab-btn active" data-sub="operations">Opérations</button>
+        <button class="sub-tab-btn" data-sub="numeration">Numération</button>
+        <button class="sub-tab-btn" data-sub="fractions">Fractions</button>
+        <button class="sub-tab-btn" data-sub="perimetres">Périmètres</button>
+        <button class="sub-tab-btn" data-sub="problemes">Problèmes</button>
+      </div>
+      <div id="maths-container" class="exercises-container"></div>
+      <div class="validation-bar">
+        <button id="btn-validate-maths" class="btn-primary">Vérifier ✨</button>
+        <button id="btn-restart-maths" class="btn-secondary">Recommencer 🔄</button>
+        <span id="maths-score" class="score-display"></span>
+      </div>
+    </section>
+
+    <!-- Onglet Anglais -->
+    <section id="tab-anglais" class="tab-content">
+      <div id="anglais-container" class="exercises-container"></div>
+      <div class="validation-bar">
+        <button id="btn-validate-anglais" class="btn-primary">Vérifier ✨</button>
+        <button id="btn-restart-anglais" class="btn-secondary">Recommencer 🔄</button>
+        <span id="anglais-score" class="score-display"></span>
+      </div>
+    </section>
+
+    <!-- Onglet Maternelle -->
+    <section id="tab-maternelle" class="tab-content">
+      <div class="sub-tabs">
+        <button class="sub-tab-btn active" data-sub="paniers">Paniers</button>
+        <button class="sub-tab-btn" data-sub="intrus">Intrus</button>
+        <button class="sub-tab-btn" data-sub="ouest">Où est... ?</button>
+      </div>
+      <div id="maternelle-container" class="exercises-container"></div>
+      <div class="validation-bar">
+        <button id="btn-validate-maternelle" class="btn-primary">Vérifier ✨</button>
+        <button id="btn-restart-maternelle" class="btn-secondary">Recommencer 🔄</button>
+        <span id="maternelle-score" class="score-display"></span>
+      </div>
+    </section>
+
+  </main>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

@@ -5,31 +5,30 @@ export function initOuestExercise(container) {
   const colors = configData.maternelle.colors;
   const shapes = configData.maternelle.shapes;
 
-  // Garantir le choix d'une cible valide présente dans les options
+  // 1. Sélection aléatoire stricte de la cible
   const targetColor = colors[getRandomInt(0, colors.length - 1)];
   const targetShape = shapes[getRandomInt(0, shapes.length - 1)];
 
-  let colorNameDisplay = targetColor.name.toLowerCase();
+  // 2. Construction de la consigne textuelle et vocale parfaitement synchronisée
+  const phrase = `Clique sur le ${targetShape} ${targetColor.name.toLowerCase()}`;
 
   container.innerHTML = `
     <div class="maternelle-wrapper">
       <p class="maternelle-instruction">Écoute la consigne et clique sur le bon objet ! 👂</p>
-      <button id="btn-play-audio" class="btn-secondary" style="margin-bottom: 20px;">🔊 Écouter la consigne</button>
-      <div class="maternelle-grid" id="ouest-grid"></div>
+      <button id="btn-play-audio" class="btn-secondary" style="margin-bottom: 25px; padding: 12px 24px; font-size: 1.1rem;">🔊 Écouter la consigne</button>
+      <div class="maternelle-grid" id="ouest-grid" style="display: flex; justify-content: center; gap: 30px; align-items: center; min-height: 140px; flex-wrap: wrap;"></div>
       <div id="ouest-explanation" class="maternelle-explanation" style="display: none;"></div>
       <span class="feedback-icon feedback-spacing" id="ouest-feedback"></span>
     </div>
   `;
 
-  const phrase = `Clique sur le ${targetShape} ${colorNameDisplay}`;
-
+  // Fonction de synthèse vocale sécurisée pour mobile (iOS / Android) et desktop
   const speakInstruction = () => {
     if (!('speechSynthesis' in window)) return;
 
     const synth = window.speechSynthesis;
     synth.cancel();
 
-    // Sur iOS / Chrome iOS, la file d'attente se bloque parfois. Forcer resume()
     if (synth.paused) {
       synth.resume();
     }
@@ -38,54 +37,35 @@ export function initOuestExercise(container) {
     utterance.lang = 'fr-FR';
     utterance.rate = 0.85;
 
-    // Garder une référence globale pour éviter le garbage collection sur iOS
+    // Référence globale anti-garbage collector sur iOS
     window._currentUtterance = utterance;
 
-    const playUtterance = () => {
-      const voices = synth.getVoices();
-      if (voices && voices.length > 0) {
-        // Chercher une voix française explicite
-        const frVoice = voices.find(v => v.lang === 'fr-FR' || v.lang === 'fr_FR' || v.lang.startsWith('fr'));
-        if (frVoice) {
-          utterance.voice = frVoice;
-        }
-      }
-      synth.speak(utterance);
-    };
-
-    // Sur iOS, getVoices() peut être vide au premier chargement tant que l'événement onvoiceschanged n'a pas tiré
     const voices = synth.getVoices();
-    if (!voices || voices.length === 0) {
-      synth.onvoiceschanged = () => {
-        playUtterance();
-        synth.onvoiceschanged = null;
-      };
-      // Sécurité si onvoiceschanged ne se déclenche pas
-      setTimeout(playUtterance, 100);
-    } else {
-      playUtterance();
+    if (voices && voices.length > 0) {
+      const frVoice = voices.find(v => v.lang.startsWith('fr'));
+      if (frVoice) utterance.voice = frVoice;
     }
+
+    synth.speak(utterance);
   };
 
-  // Sur iOS, la lecture automatique au chargement est bloquée par les politiques du navigateur.
-  // Le bouton au clic est indispensable.
+  // Le clic utilisateur obligatoire débloque l'audio sur mobile (Chrome/Safari iOS)
   const audioBtn = container.querySelector('#btn-play-audio');
   audioBtn.onclick = (e) => {
     e.preventDefault();
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.resume();
+    }
     speakInstruction();
   };
-
-  // Tentative au chargement
-  setTimeout(speakInstruction, 400);
 
   const grid = container.querySelector('#ouest-grid');
   const explanationBox = container.querySelector('#ouest-explanation');
   const feedback = container.querySelector('#ouest-feedback');
 
-  // Option 1 : Toujours la bonne réponse
+  // 3. Génération des options (1 bonne réponse + 2 distracteurs garantis sans doublon)
   const options = [{ shape: targetShape, color: targetColor, correct: true }];
 
-  // Générer 2 distracteurs uniques
   while (options.length < 3) {
     const randColor = colors[getRandomInt(0, colors.length - 1)];
     const randShape = shapes[getRandomInt(0, shapes.length - 1)];
@@ -97,24 +77,50 @@ export function initOuestExercise(container) {
   const shuffledOptions = shuffleArray(options);
   let selectedOption = null;
 
+  // 4. Rendu visuel robuste des formes avec dimensions explicites en dur
   shuffledOptions.forEach(item => {
     const el = document.createElement('div');
-    const cssShapeClass = item.shape === 'cercle' ? 'circle' : (item.shape === 'carré' ? 'square' : 'triangle');
-    el.className = `grid-shape ${cssShapeClass}`;
+    el.style.cursor = 'pointer';
+    el.style.transition = 'transform 0.2s ease, box-shadow 0.2s ease';
+    el.style.boxShadow = '0 6px 15px rgba(0, 0, 0, 0.15)';
+    el.style.display = 'inline-block';
 
-    if (item.shape === 'triangle') {
-      el.style.borderBottom = `85px solid ${item.color.code}`;
-    } else {
+    if (item.shape === 'rond') {
+      el.style.width = '90px';
+      el.style.height = '90px';
+      el.style.borderRadius = '50%';
       el.style.backgroundColor = item.color.code;
+    } else if (item.shape === 'carré') {
+      el.style.width = '90px';
+      el.style.height = '90px';
+      el.style.borderRadius = '16px';
+      el.style.backgroundColor = item.color.code;
+    } else if (item.shape === 'triangle') {
+      el.style.width = '0';
+      el.style.height = '0';
+      el.style.borderLeft = '50px solid transparent';
+      el.style.borderRight = '50px solid transparent';
+      el.style.borderBottom = `95px solid ${item.color.code}`;
+      el.style.boxShadow = 'none';
     }
 
+    el.onmouseover = () => el.style.transform = 'scale(1.08)';
+    el.onmouseout = () => el.style.transform = 'scale(1)';
+
     el.onclick = () => {
-      grid.querySelectorAll('.grid-shape').forEach(d => d.classList.remove('selected-shape'));
-      el.classList.add('selected-shape');
+      grid.querySelectorAll('div > div, .grid-shape').forEach(d => {
+        d.style.outline = 'none';
+        d.style.transform = 'scale(1)';
+      });
+      el.style.outline = '5px solid #0284c7';
+      el.style.outlineOffset = '6px';
       selectedOption = item;
     };
 
-    grid.appendChild(el);
+    const wrapper = document.createElement('div');
+    wrapper.style.padding = '10px';
+    wrapper.appendChild(el);
+    grid.appendChild(wrapper);
   });
 
   window.checkOuest = () => {
@@ -122,7 +128,7 @@ export function initOuestExercise(container) {
 
     if (!selectedOption) {
       explanationBox.style.color = '#eab308';
-      explanationBox.innerHTML = '⚠️ N\'oublie pas de cliquer sur une forme !';
+      explanationBox.innerHTML = "⚠️ N'oublie pas de cliquer sur une forme !";
       feedback.textContent = '❌';
       return false;
     }

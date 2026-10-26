@@ -1,7 +1,7 @@
 import { launchConfetti } from '../confettis.js';
 import { initPaniersExercise } from './maternelle/paniers.js';
 import { initIntrusExercise } from './maternelle/intrus.js';
-import { initOuestExercise } from './maternelle/ouest.js';
+import { initTrouveExercise } from './maternelle/trouve.js';
 
 export function initMaternelle(subType = 'paniers') {
   const container = document.getElementById('maternelle-container');
@@ -27,8 +27,8 @@ export function initMaternelle(subType = 'paniers') {
     initPaniersExercise(container);
   } else if (cleanType === 'intrus') {
     initIntrusExercise(container);
-  } else if (cleanType === 'ouest') {
-    initOuestExercise(container);
+  } else if (cleanType === 'trouve') {
+    initTrouveExercise(container);
   }
 
   document.getElementById('btn-validate-maternelle').onclick = () => {
@@ -38,8 +38,8 @@ export function initMaternelle(subType = 'paniers') {
       isCorrect = window.checkPaniers ? window.checkPaniers() : false;
     } else if (cleanType === 'intrus') {
       isCorrect = window.checkIntrus ? window.checkIntrus() : false;
-    } else if (cleanType === 'ouest') {
-      isCorrect = window.checkOuest ? window.checkOuest() : false;
+    } else if (cleanType === 'trouve') {
+      isCorrect = window.checktrouve ? window.checktrouve() : false;
     }
 
     if (isCorrect) {

@@ -19,7 +19,7 @@ export function initAnglais() {
   // Construction du pool de questions
   const pool = [];
 
-  // Question du jour
+  // Question dynamique du jour
   pool.push({
     question: "What's the day today? (Écris le jour en anglais)",
     answer: currentDayEnglish,
@@ -42,7 +42,15 @@ export function initAnglais() {
     });
   });
 
-  // Tirage aléatoire de 5 questions
+  // Jours de la semaine (ex: Lundi -> monday)
+  configData.anglais.days.forEach(item => {
+    pool.push({
+      question: `Traduis le jour <strong>${item.fr}</strong> en anglais :`,
+      answer: item.en
+    });
+  });
+
+  // Tirage aléatoire de 5 questions parmi tout le pool
   const selectedQuestions = shuffleArray([...pool]).slice(0, totalCount);
 
   selectedQuestions.forEach((item, index) => {

@@ -302,6 +302,15 @@ export const configData = {
       { fr: "Avril", en: "april" }, { fr: "Mai", en: "may" }, { fr: "Juin", en: "june" },
       { fr: "Juillet", en: "july" }, { fr: "Août", en: "august" }, { fr: "Septembre", en: "september" },
       { fr: "Octobre", en: "october" }, { fr: "Novembre", en: "november" }, { fr: "Décembre", en: "december" }
+    ],
+    days: [
+      { fr: "Lundi", en: "monday" },
+      { fr: "Mardi", en: "tuesday" },
+      { fr: "Mercredi", en: "wednesday" },
+      { fr: "Jeudi", en: "thursday" },
+      { fr: "Vendredi", en: "friday" },
+      { fr: "Samedi", en: "saturday" },
+      { fr: "Dimanche", en: "sunday" }
     ]
   },
   maternelle: {

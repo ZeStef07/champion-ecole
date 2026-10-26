@@ -24,38 +24,59 @@ export function initOuestExercise(container) {
   const phrase = `Clique sur le ${targetShape} ${colorNameDisplay}`;
 
   const speakInstruction = () => {
-    if ('speechSynthesis' in window) {
-      window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(phrase);
-      utterance.lang = 'fr-FR';
-      utterance.rate = 0.85;
+    if (!('speechSynthesis' in window)) return;
 
-      // Correction pour iOS / Safari / Chrome iOS : garder une référence globale pour éviter le garbage collection
-      window._currentUtterance = utterance;
+    const synth = window.speechSynthesis;
+    synth.cancel();
 
-      // Sur iOS, parfois la voix française met un instant à charger ou nécessite un appel explicite
-      const voices = window.speechSynthesis.getVoices();
-      if (voices.length > 0) {
-        const frVoice = voices.find(v => v.lang.startsWith('fr'));
-        if (frVoice) utterance.voice = frVoice;
+    // Sur iOS / Chrome iOS, la file d'attente se bloque parfois. Forcer resume()
+    if (synth.paused) {
+      synth.resume();
+    }
+
+    const utterance = new SpeechSynthesisUtterance(phrase);
+    utterance.lang = 'fr-FR';
+    utterance.rate = 0.85;
+
+    // Garder une référence globale pour éviter le garbage collection sur iOS
+    window._currentUtterance = utterance;
+
+    const playUtterance = () => {
+      const voices = synth.getVoices();
+      if (voices && voices.length > 0) {
+        // Chercher une voix française explicite
+        const frVoice = voices.find(v => v.lang === 'fr-FR' || v.lang === 'fr_FR' || v.lang.startsWith('fr'));
+        if (frVoice) {
+          utterance.voice = frVoice;
+        }
       }
+      synth.speak(utterance);
+    };
 
-      window.speechSynthesis.speak(utterance);
+    // Sur iOS, getVoices() peut être vide au premier chargement tant que l'événement onvoiceschanged n'a pas tiré
+    const voices = synth.getVoices();
+    if (!voices || voices.length === 0) {
+      synth.onvoiceschanged = () => {
+        playUtterance();
+        synth.onvoiceschanged = null;
+      };
+      // Sécurité si onvoiceschanged ne se déclenche pas
+      setTimeout(playUtterance, 100);
+    } else {
+      playUtterance();
     }
   };
 
-  // Sur iOS (iPhone/iPad), les navigateurs bloquent la lecture audio automatique sans interaction utilisateur préalable.
-  // Un léger délai permet de tenter la lecture, mais le bouton "🔊 Écouter la consigne" garantit le déclenchement au clic.
-  setTimeout(speakInstruction, 300);
-  
+  // Sur iOS, la lecture automatique au chargement est bloquée par les politiques du navigateur.
+  // Le bouton au clic est indispensable.
   const audioBtn = container.querySelector('#btn-play-audio');
-  audioBtn.onclick = () => {
-    // Déverrouillage explicite pour iOS
-    if ('speechSynthesis' in window) {
-      window.speechSynthesis.resume();
-    }
+  audioBtn.onclick = (e) => {
+    e.preventDefault();
     speakInstruction();
   };
+
+  // Tentative au chargement
+  setTimeout(speakInstruction, 400);
 
   const grid = container.querySelector('#ouest-grid');
   const explanationBox = container.querySelector('#ouest-explanation');

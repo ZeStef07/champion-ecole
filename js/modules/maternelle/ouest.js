@@ -15,8 +15,8 @@ export function initOuestExercise(container) {
   container.innerHTML = `
     <div class="maternelle-wrapper">
       <p class="maternelle-instruction">Écoute la consigne et clique sur le bon objet ! 👂</p>
-      <button id="btn-play-audio" class="btn-secondary" style="margin-bottom: 25px; padding: 12px 24px; font-size: 1.1rem;">🔊 Écouter la consigne</button>
-      <div class="maternelle-grid" id="ouest-grid" style="display: flex; justify-content: center; gap: 30px; align-items: center; min-height: 140px; flex-wrap: wrap;"></div>
+      <button id="btn-play-audio" class="btn-secondary" style="margin-bottom: 15px; padding: 10px 20px; font-size: 1rem;">🔊 Écouter la consigne</button>
+      <div class="maternelle-grid" id="ouest-grid"></div>
       <div id="ouest-explanation" class="maternelle-explanation" style="display: none;"></div>
       <span class="feedback-icon feedback-spacing" id="ouest-feedback"></span>
     </div>
@@ -77,30 +77,31 @@ export function initOuestExercise(container) {
   const shuffledOptions = shuffleArray(options);
   let selectedOption = null;
 
-  // 4. Rendu visuel robuste des formes avec dimensions explicites en dur
+  // 4. Rendu visuel responsive et harmonisé des formes
   shuffledOptions.forEach(item => {
     const el = document.createElement('div');
     el.style.cursor = 'pointer';
     el.style.transition = 'transform 0.2s ease, box-shadow 0.2s ease';
-    el.style.boxShadow = '0 6px 15px rgba(0, 0, 0, 0.15)';
+    el.style.boxShadow = '0 6px 15px rgba(0, 0, 0, 0.12)';
     el.style.display = 'inline-block';
+    el.style.flexShrink = '0';
 
-    if (item.shape === 'rond') {
-      el.style.width = '90px';
-      el.style.height = '90px';
+    if (item.shape === 'cercle') {
+      el.style.width = '75px';
+      el.style.height = '75px';
       el.style.borderRadius = '50%';
       el.style.backgroundColor = item.color.code;
     } else if (item.shape === 'carré') {
-      el.style.width = '90px';
-      el.style.height = '90px';
-      el.style.borderRadius = '16px';
+      el.style.width = '75px';
+      el.style.height = '75px';
+      el.style.borderRadius = '14px';
       el.style.backgroundColor = item.color.code;
     } else if (item.shape === 'triangle') {
       el.style.width = '0';
       el.style.height = '0';
-      el.style.borderLeft = '50px solid transparent';
-      el.style.borderRight = '50px solid transparent';
-      el.style.borderBottom = `95px solid ${item.color.code}`;
+      el.style.borderLeft = '42px solid transparent';
+      el.style.borderRight = '42px solid transparent';
+      el.style.borderBottom = `80px solid ${item.color.code}`;
       el.style.boxShadow = 'none';
     }
 
@@ -108,17 +109,17 @@ export function initOuestExercise(container) {
     el.onmouseout = () => el.style.transform = 'scale(1)';
 
     el.onclick = () => {
-      grid.querySelectorAll('div > div, .grid-shape').forEach(d => {
+      grid.querySelectorAll('.grid-shape-wrapper > div').forEach(d => {
         d.style.outline = 'none';
         d.style.transform = 'scale(1)';
       });
-      el.style.outline = '5px solid #0284c7';
-      el.style.outlineOffset = '6px';
+      el.style.outline = '4px solid #0284c7';
+      el.style.outlineOffset = '4px';
       selectedOption = item;
     };
 
     const wrapper = document.createElement('div');
-    wrapper.style.padding = '10px';
+    wrapper.className = 'grid-shape-wrapper';
     wrapper.appendChild(el);
     grid.appendChild(wrapper);
   });

@@ -118,7 +118,7 @@ function generateDecompositionProblem(card, index, actors) {
         Parmi ceux-ci, ${pronL} compte <strong>${part1}</strong> ${obj.nom} ${obj.color1}, <strong>${part2}</strong> ${obj.nom} ${obj.color2}, et le reste est composé de ${obj.nom} ${obj.color3}.
       </span>
       <div style="margin-top: 0.5rem; width: 100%; display: flex; flex-direction: column; gap: 6px; font-size: 0.9rem;">
-        <div style="display: flex; justify-content: space-between; align-items: center;"><span>Combien de ${obj.nom} ${obj.color3} a-${pronL}-t-elle ?</span> <input type="text" class="p-ans-1" style="width: 55px; text-align: center;" autocomplete="off"></div>
+        <div style="display: flex; justify-content: space-between; align-items: center;"><span>Combien de ${obj.nom} ${obj.color3} a-t-${pronL} ?</span> <input type="text" class="p-ans-1" style="width: 55px; text-align: center;" autocomplete="off"></div>
       </div>
       <span class="feedback-icon" style="align-self: center; margin-top: 4px;"></span>
     </div>
